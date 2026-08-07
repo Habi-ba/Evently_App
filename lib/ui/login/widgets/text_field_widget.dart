@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 
 class TextFieldWidget extends StatelessWidget {
   final Icon? sufIcon;
-  final Icon prefIcon;
+  final Icon? prefIcon;
   final String hintDisplayedTxt;
 
   const TextFieldWidget({
     super.key,
     this.sufIcon,
     required this.hintDisplayedTxt,
-    required this.prefIcon,
+    this.prefIcon,
   });
 
   @override

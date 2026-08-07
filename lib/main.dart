@@ -2,14 +2,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:evently/providers/app-theme_provider.dart';
 import 'package:evently/ui/home/home_screen.dart';
 import 'package:evently/ui/intro/introduction_screen.dart';
-import 'package:evently/ui/intro/pages_list.dart';
 import 'package:evently/ui/intro/personalize_screen.dart';
 import 'package:evently/ui/login/login_screen.dart';
 import 'package:evently/ui/login/register_screen.dart';
 import 'package:evently/utils/app_routes.dart';
 import 'package:evently/utils/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:introduction_screen/introduction_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -50,7 +48,7 @@ class MyApp extends StatelessWidget {
       },
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: AppThemeProvider().themeMode,
+      themeMode: themeProvider.themeMode,
     );
   }
 }

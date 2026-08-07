@@ -18,6 +18,7 @@ class AppImages {
   static const String meetingLightImage = 'assets/images/light/Meeting.png';
   static const String sportLightImage = 'assets/images/light/Sport.png';
   static const String googleLogoImage = 'assets/images/light/google_icon.svg';
+  static const String routeLogoImage = 'assets/images/route_logo.png';
 
   //dark
   static const String onboarding1DarkImage =
