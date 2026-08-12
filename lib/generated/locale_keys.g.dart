@@ -61,4 +61,16 @@ abstract class LocaleKeys {
   static const update_event = 'update_event';
   static const meeting = 'meeting';
   static const exhibition = 'exhibition';
+  static const please_enter_event_title = 'please_enter_event_title';
+  static const please_enter_event_description =
+      'please_enter_event_description';
+  static const please_choose_date_time = 'please_choose_date_time';
+  static const please_enter_email = 'please_enter_email';
+  static const please_enter_valid_email = 'please_enter_valid_email';
+  static const please_enter_password = 'please_enter_password';
+  static const password_too_short = 'password_too_short';
+  static const please_enter_name = 'please_enter_name';
+  static const please_enter_confirm_password = 'please_enter_confirm_password';
+  static const passwords_do_not_match = 'passwords_do_not_match';
+  static const password_min_length = 'password_min_length';
 }

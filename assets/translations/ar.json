@@ -56,5 +56,16 @@
   "edit_event": "تعديل الفعالية",
   "update_event": "تحديث الفعالية",
   "meeting": "اجتماع",
-  "exhibition": "معرض"
+  "exhibition": "معرض",
+  "please_enter_event_title": "من فضلك أدخل عنوان الحدث",
+  "please_enter_event_description": "من فضلك أدخل وصف الحدث",
+  "please_choose_date_time": "من فضلك اختر تاريخ ووقت الحدث",
+  "please_enter_email": "من فضلك أدخل بريدك الإلكتروني",
+  "please_enter_valid_email": "من فضلك أدخل بريد إلكتروني صحيح",
+  "please_enter_password": "من فضلك أدخل كلمة المرور",
+  "password_too_short": "كلمة المرور يجب ألا تقل عن 6 أحرف",
+  "please_enter_name": "من فضلك أدخل اسمك",
+  "please_enter_confirm_password": "من فضلك أكد كلمة المرور",
+  "passwords_do_not_match": "كلمتا المرور غير متطابقتين",
+  "password_min_length": "من فضلك أدخل 6 أحرف على الأقل"
 }

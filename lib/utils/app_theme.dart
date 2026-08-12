@@ -31,6 +31,7 @@ class AppTheme {
     textTheme: TextTheme(
       headlineLarge: AppStyles.semiBold24MainColor,
       headlineMedium: AppStyles.semiBold16MainLight,
+      headlineSmall: AppStyles.med18Black,
       titleLarge: AppStyles.semiBold20Black,
       titleMedium: AppStyles.med18MainColor,
       labelLarge: AppStyles.med20White,
@@ -39,6 +40,7 @@ class AppTheme {
       bodyMedium: AppStyles.med16Black,
       labelMedium: AppStyles.semiBold14MainColor,
       titleSmall: AppStyles.med16MainColor,
+      displaySmall: AppStyles.reg14MainLight,
     ),
   );
   static final ThemeData darkTheme = ThemeData(
@@ -67,6 +69,7 @@ class AppTheme {
     textTheme: TextTheme(
       headlineLarge: AppStyles.semiBold24White,
       headlineMedium: AppStyles.semiBold16MainDark,
+      headlineSmall: AppStyles.med18White,
       titleLarge: AppStyles.semiBold20White,
       labelLarge: AppStyles.med20White,
       bodyMedium: AppStyles.med16White,
@@ -75,6 +78,7 @@ class AppTheme {
       labelSmall: AppStyles.reg14LightGray,
       labelMedium: AppStyles.semiBold14MainColorDark,
       titleSmall: AppStyles.med16MainDark,
+      displaySmall: AppStyles.reg14MainDark,
     ),
   );
 }

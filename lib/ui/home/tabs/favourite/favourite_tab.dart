@@ -4,8 +4,8 @@ import 'package:evently/ui/login/widgets/text_field_widget.dart';
 import 'package:evently/utils/size_utils.dart';
 import 'package:flutter/material.dart';
 
-import '../../utils/app_images.dart';
-import '../home/widgets/event_card.dart';
+import '../../../../utils/app_images.dart';
+import '../../widgets/event_card.dart';
 
 class FavouriteTab extends StatelessWidget {
   const FavouriteTab({super.key});

@@ -17,4 +17,5 @@ class AppColors {
   static const Color redColor = Color(0xFFFF3232);
   static const Color disableColor = Color(0xFFB9B9B9);
   static const Color eventGrayInput = Color(0xFF7B7B7B);
+  static const Color transparent = Color(0x404040);
 }

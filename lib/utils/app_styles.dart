@@ -143,6 +143,7 @@ class AppStyles {
     fontWeight: FontWeight.normal,
     color: AppColors.mainLightMode,
     decoration: TextDecoration.underline,
+      decorationColor: AppColors.mainLightMode
   );
   static TextStyle med16Disable = GoogleFonts.poppins(
     fontSize: 16,
@@ -174,6 +175,7 @@ class AppStyles {
     fontWeight: FontWeight.normal,
     color: AppColors.mainDarkMode,
     decoration: TextDecoration.underline,
+      decorationColor: AppColors.mainDarkMode
   );
   static TextStyle med16MainDark = GoogleFonts.poppins(
     fontSize: 16,

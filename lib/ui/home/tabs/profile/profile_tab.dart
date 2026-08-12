@@ -1,11 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:evently/generated/locale_keys.g.dart';
 import 'package:evently/providers/app-theme_provider.dart';
 import 'package:evently/utils/size_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../utils/app_images.dart';
-import '../../utils/colors.dart';
+import '../../../../utils/app_images.dart';
+import '../../../../utils/colors.dart';
 
 class ProfileTab extends StatelessWidget {
   const ProfileTab({super.key});
@@ -50,7 +51,7 @@ class ProfileTab extends StatelessWidget {
 
               // ====== Dark mode row ======
               _ProfileTile(
-                title: 'Dark mode',
+                title: LocaleKeys.dark_mode.tr(),
                 trailing: Switch(
                   value: themeProvider.isDarkMode,
                   onChanged: (value) {
@@ -65,7 +66,7 @@ class ProfileTab extends StatelessWidget {
 
               // ====== Language row ======
               _ProfileTile(
-                title: 'Language',
+                title: LocaleKeys.language.tr(),
                 trailing: Icon(
                   Icons.chevron_right,
                   color: theme.iconTheme.color,
@@ -83,7 +84,7 @@ class ProfileTab extends StatelessWidget {
 
               // ====== Logout row ======
               _ProfileTile(
-                title: 'Logout',
+                title: LocaleKeys.logout.tr(),
                 trailing: const Icon(
                   Icons.logout_outlined,
                   color: AppColors.redColor,

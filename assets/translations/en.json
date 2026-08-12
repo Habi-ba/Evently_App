@@ -56,5 +56,17 @@
   "edit_event": "Edit event",
   "update_event": "Update event",
   "meeting": "Meeting",
-  "exhibition": "Exhibition"
+  "exhibition": "Exhibition",
+  "please_enter_event_title": "Please Enter Event Title",
+  "please_enter_event_description": "Please Enter Event Description",
+  "please_choose_date_time": "Please Choose Event Date and Time",
+  "please_enter_email": "Please Enter Your Email",
+  "please_enter_valid_email": "Please Enter a Valid Email",
+  "please_enter_password": "Please Enter Your Password",
+  "password_too_short": "Password Must Be At Least 6 Characters",
+  "please_enter_name": "Please Enter Your Name",
+  "please_enter_confirm_password": "Please Confirm Your Password",
+  "passwords_do_not_match": "Passwords Do Not Match",
+  "password_min_length": "Please Enter At Least 6 Characters"
+
 }

@@ -4,9 +4,10 @@
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:evently/generated/locale_keys.g.dart';
-import 'package:evently/ui/favourite/favourite_tab.dart';
 import 'package:evently/ui/home/home_tab.dart';
-import 'package:evently/ui/profile/profile_tab.dart';
+import 'package:evently/ui/home/tabs/favourite/favourite_tab.dart';
+import 'package:evently/ui/home/tabs/profile/profile_tab.dart';
+import 'package:evently/utils/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -29,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ProfileTab(),
   ];
 
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -40,7 +42,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
       floatingActionButton: FloatingActionButton(
         backgroundColor: theme.colorScheme.primary,
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, AppRoutes.addEventScreenRoute);
+        },
         child: Icon(Icons.add, color: theme.colorScheme.onPrimary),
       ),
 
