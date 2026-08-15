@@ -7,7 +7,7 @@ class SizeConfig {
   static double height(BuildContext context) =>
       MediaQuery.of(context).size.height;
 
-  static const double figmaWidth = 375;
+  static const double figmaWidth = 393;
   static const double figmaHeight = 812;
 
   static double scaleWidth(BuildContext context, double figmaSize) {

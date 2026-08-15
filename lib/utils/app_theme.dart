@@ -20,11 +20,10 @@ class AppTheme {
     colorScheme: ColorScheme.light(
       primary: AppColors.mainLightMode,
       onPrimary: AppColors.whiteColor,
-      // لون النص/الأيقونة فوق العنصر المختار
+
       surface: AppColors.whiteColor,
-      // خلفية الـ toggle نفسه (مش الاختيار المحدد)
+
       onSurface: AppColors.mainLightMode,
-      // لون النص/الأيقونة للعنصر الغير مختار
       secondary: AppColors.grayColor,
       outline: AppColors.strokeLightColor,
     ),

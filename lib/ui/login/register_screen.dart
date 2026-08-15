@@ -4,7 +4,9 @@ import 'package:evently/ui/login/widgets/outlined_button_widget.dart';
 import 'package:evently/ui/login/widgets/text_field_widget.dart';
 import 'package:evently/utils/app_images.dart';
 import 'package:evently/utils/app_routes.dart';
+import 'package:evently/utils/dialog_utils.dart';
 import 'package:evently/utils/size_utils.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -20,13 +22,13 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  var nameController = TextEditingController();
+  var nameController = TextEditingController(text: 'habiba');
 
-  var emailController = TextEditingController();
+  var emailController = TextEditingController(text: 'habibafd2@gmail.com');
 
-  var passwordController = TextEditingController();
+  var passwordController = TextEditingController(text: '122323');
 
-  var confirmPasswordController = TextEditingController();
+  var confirmPasswordController = TextEditingController(text: '122323');
 
   var formKey = GlobalKey<FormState>();
 
@@ -62,10 +64,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         SizedBox(height: 47),
                         Text(
                           LocaleKeys.signup_title.tr(),
-                          style: Theme
-                              .of(context)
-                              .textTheme
-                              .headlineLarge,
+                          style: Theme.of(context).textTheme.headlineLarge,
                         ),
                         SizedBox(height: 24),
                         SizedBox(
@@ -74,9 +73,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           child: TextFieldWidget(
                             controller: nameController,
                             validator: (text) {
-                              if (text == null || text
-                                  .trim()
-                                  .isEmpty) {
+                              if (text == null || text.trim().isEmpty) {
                                 return LocaleKeys.please_enter_name.tr();
                               }
                               return null;
@@ -84,10 +81,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             hintDisplayedTxt: LocaleKeys.name_hint.tr(),
                             prefIcon: Icon(
                               MdiIcons.accountOutline,
-                              color: Theme
-                                  .of(context)
-                                  .iconTheme
-                                  .color,
+                              color: Theme.of(context).iconTheme.color,
                             ),
                           ),
                         ),
@@ -98,13 +92,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           child: TextFieldWidget(
                             controller: emailController,
                             validator: (text) {
-                              if (text == null || text
-                                  .trim()
-                                  .isEmpty) {
+                              if (text == null || text.trim().isEmpty) {
                                 return LocaleKeys.please_enter_email.tr();
                               }
                               final emailRegex = RegExp(
-                                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                                r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                              );
                               if (!emailRegex.hasMatch(text.trim())) {
                                 return LocaleKeys.please_enter_valid_email.tr();
                               }
@@ -113,10 +106,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             hintDisplayedTxt: LocaleKeys.email_hint.tr(),
                             prefIcon: Icon(
                               MdiIcons.emailOutline,
-                              color: Theme
-                                  .of(context)
-                                  .iconTheme
-                                  .color,
+                              color: Theme.of(context).iconTheme.color,
                             ),
                           ),
                         ),
@@ -128,9 +118,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           child: TextFieldWidget(
                             controller: passwordController,
                             validator: (text) {
-                              if (text == null || text
-                                  .trim()
-                                  .isEmpty) {
+                              if (text == null || text.trim().isEmpty) {
                                 return LocaleKeys.please_enter_password.tr();
                               }
                               if (text.length < 6) {
@@ -141,17 +129,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             hintDisplayedTxt: LocaleKeys.password_hint.tr(),
                             prefIcon: Icon(
                               Icons.lock_outline_rounded,
-                              color: Theme
-                                  .of(context)
-                                  .iconTheme
-                                  .color,
+                              color: Theme.of(context).iconTheme.color,
                             ),
                             sufIcon: Icon(
                               MdiIcons.eyeOffOutline,
-                              color: Theme
-                                  .of(context)
-                                  .iconTheme
-                                  .color,
+                              color: Theme.of(context).iconTheme.color,
                             ),
                           ),
                         ),
@@ -162,9 +144,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           child: TextFieldWidget(
                             controller: confirmPasswordController,
                             validator: (text) {
-                              if (text == null || text
-                                  .trim()
-                                  .isEmpty) {
+                              if (text == null || text.trim().isEmpty) {
                                 return LocaleKeys.please_enter_confirm_password
                                     .tr();
                               }
@@ -174,20 +154,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               return null;
                             },
                             hintDisplayedTxt:
-                            LocaleKeys.confirm_password_hint.tr(),
+                                LocaleKeys.confirm_password_hint.tr(),
                             prefIcon: Icon(
                               Icons.lock_outline_rounded,
-                              color: Theme
-                                  .of(context)
-                                  .iconTheme
-                                  .color,
+                              color: Theme.of(context).iconTheme.color,
                             ),
                             sufIcon: Icon(
                               MdiIcons.eyeOffOutline,
-                              color: Theme
-                                  .of(context)
-                                  .iconTheme
-                                  .color,
+                              color: Theme.of(context).iconTheme.color,
                             ),
                           ),
                         ),
@@ -205,10 +179,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           children: [
                             Text(
                               LocaleKeys.already_have_account.tr(),
-                              style: Theme
-                                  .of(context)
-                                  .textTheme
-                                  .labelSmall,
+                              style: Theme.of(context).textTheme.labelSmall,
                             ),
                             TextButton(
                               onPressed: () {
@@ -219,10 +190,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               },
                               child: Text(
                                 LocaleKeys.login.tr(),
-                                style: Theme
-                                    .of(context)
-                                    .textTheme
-                                    .labelMedium,
+                                style: Theme.of(context).textTheme.labelMedium,
                               ),
                             ),
                           ],
@@ -235,10 +203,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 endIndent: 2,
                                 height: 2,
                                 thickness: 1,
-                                color: Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .outline,
+                                color: Theme.of(context).colorScheme.outline,
                                 indent: 2,
                               ),
                             ),
@@ -246,10 +211,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               onPressed: () {},
                               child: Text(
                                 LocaleKeys.or.tr(),
-                                style: Theme
-                                    .of(context)
-                                    .textTheme
-                                    .titleSmall,
+                                style: Theme.of(context).textTheme.titleSmall,
                               ),
                             ),
                             Expanded(
@@ -257,10 +219,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 endIndent: 2,
                                 height: 2,
                                 thickness: 1,
-                                color: Theme
-                                    .of(context)
-                                    .colorScheme
-                                    .outline,
+                                color: Theme.of(context).colorScheme.outline,
                                 indent: 2,
                               ),
                             ),
@@ -288,12 +247,66 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  void onSignUp() {
+  void onSignUp() async {
     if (formKey.currentState!.validate() == true) {
       // todo: register logic
+      try {
+        //todo:show Loading
+
+        DialogUtils.showLoading(context: context, loadingText: 'Waiting...');
+        final credential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
+              email: emailController.text,
+              password: passwordController.text,
+            );
+        //todo:hideLoading
+        DialogUtils.hideLoading(context: context);
+        //todo:show error
+        DialogUtils.showMessage(
+          posActionName: 'Ok',
+          title: 'Success',
+          context: context,
+          message: 'Registered Successfully ',
+          posAction: () {
+            Navigator.of(context).pushNamed(AppRoutes.loginScreenRoute);
+          },
+        );
+      } on FirebaseAuthException catch (e) {
+        DialogUtils.hideLoading(context: context);
+        String message;
+        switch (e.code) {
+          case 'email-already-in-use':
+            message = 'This email is already registered.';
+            break;
+          case 'weak-password':
+            message = 'The password provided is too weak.';
+            break;
+          case 'invalid-email':
+            message = 'Invalid email address.';
+            break;
+          case 'operation-not-allowed':
+            message = 'Registration is currently disabled.';
+            break;
+          default:
+            message = e.message ?? 'Something went wrong.';
+        }
+        DialogUtils.showMessage(
+          posActionName: 'Ok',
+          title: 'Error',
+          context: context,
+          message: message,
+        );
+      } catch (e) {
+        DialogUtils.hideLoading(context: context);
+        DialogUtils.showMessage(
+          posActionName: 'Ok',
+          title: 'Error',
+          context: context,
+          message: e.toString(),
+        );
+      }
     }
   }
 
   void onTab2() {}
 }
-

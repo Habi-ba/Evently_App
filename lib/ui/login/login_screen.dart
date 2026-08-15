@@ -5,8 +5,10 @@ import 'package:evently/ui/login/widgets/outlined_button_widget.dart';
 import 'package:evently/ui/login/widgets/text_field_widget.dart';
 import 'package:evently/utils/app_images.dart';
 import 'package:evently/utils/app_routes.dart';
+import 'package:evently/utils/dialog_utils.dart';
 import 'package:evently/utils/size_utils.dart';
 import 'package:evently/utils/themed_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -19,9 +21,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  var emailController = TextEditingController();
+  var emailController = TextEditingController(text: 'habibafd2@gmail.com');
 
-  var passwordController = TextEditingController();
+  var passwordController = TextEditingController(text: '122323');
 
   var formKey = GlobalKey<FormState>();
 
@@ -194,9 +196,66 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void onLogin() {
+  void onLogin() async {
     if (formKey.currentState!.validate() == true) {
       //todo:login
+      try {
+        //todo:show loading
+        DialogUtils.showLoading(context: context, loadingText: 'Loading ....');
+        final credential = await FirebaseAuth.instance
+            .signInWithEmailAndPassword(
+              email: emailController.text,
+              password: passwordController.text,
+            );
+        //todo:hideLoading
+        DialogUtils.hideLoading(context: context);
+        //todo:show message
+        DialogUtils.showMessage(
+          posActionName: 'Ok',
+          title: 'Success',
+          context: context,
+          message: 'Login Successfully ',
+          posAction: () {
+            Navigator.of(context).pushNamed(AppRoutes.homeScreenRoute);
+          },
+        );
+        print('id ${credential.user?.uid}');
+      } on FirebaseAuthException catch (e) {
+        DialogUtils.hideLoading(context: context);
+        String message;
+        switch (e.code) {
+          case 'user-not-found':
+            message = 'No user found for that email.';
+            break;
+          case 'wrong-password':
+            message = 'Wrong password provided for that user.';
+            break;
+          case 'invalid-email':
+            message = 'Invalid email address.';
+            break;
+          case 'invalid-credential':
+            message = 'Incorrect email or password.';
+            break;
+          default:
+            message = e.message ?? 'Something went wrong.';
+        }
+        DialogUtils.showMessage(
+          posActionName: 'Ok',
+          title: 'Error',
+          context: context,
+          message: message,
+        );
+      } catch (e) {
+        //todo:hideLoading
+        DialogUtils.hideLoading(context: context);
+        //todo:show message
+        DialogUtils.showMessage(
+          posActionName: 'Ok',
+          title: 'Error',
+          context: context,
+          message: e.toString(),
+        );
+      }
     }
   }
 
