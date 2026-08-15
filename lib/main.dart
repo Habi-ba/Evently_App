@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:evently/providers/app-theme_provider.dart';
+import 'package:evently/providers/user_provider.dart';
 import 'package:evently/ui/home/add_event/add_event_screen.dart';
 import 'package:evently/ui/home/home_screen.dart';
 import 'package:evently/ui/intro/introduction_screen.dart';
@@ -16,9 +17,7 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await EasyLocalization.ensureInitialized();
   runApp(
@@ -27,8 +26,11 @@ void main() async {
       path: 'assets/translations',
       fallbackLocale: Locale('en'),
       startLocale: Locale('ar'),
-      child: ChangeNotifierProvider(
-        create: (context) => AppThemeProvider(),
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (context) => AppThemeProvider()),
+          ChangeNotifierProvider(create: (context) => UserProvider()),
+        ],
         child: MyApp(),
       ),
     ),

@@ -1,4 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:evently/models/my_user.dart';
+import 'package:evently/providers/user_provider.dart';
 import 'package:evently/ui/login/widgets/elevated_button_widget.dart';
 import 'package:evently/ui/login/widgets/outlined_button_widget.dart';
 import 'package:evently/ui/login/widgets/text_field_widget.dart';
@@ -10,6 +12,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
 
 import '../../generated/locale_keys.g.dart';
 import '../../utils/themed_image.dart';
@@ -251,14 +254,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (formKey.currentState!.validate() == true) {
       // todo: register logic
       try {
-        //todo:show Loading
+        //todo:1-show Loading
 
         DialogUtils.showLoading(context: context, loadingText: 'Waiting...');
+        //todo:2-fireAuth
         final credential = await FirebaseAuth.instance
             .createUserWithEmailAndPassword(
               email: emailController.text,
               password: passwordController.text,
             );
+        //todo:3-save user provider
+        MyUser myUser = MyUser(
+            id: credential.user?.uid ?? '',
+            name: nameController.text,
+            email: emailController.text
+        );
+        //listen:fales => 34an e7na bra el build
+        //m3nah enna m4 3ayzen n3rf haga lama el user yt8yer
+        var userProvider = Provider.of<UserProvider>(context, listen: false);
+        userProvider.updateUser(myUser);
         //todo:hideLoading
         DialogUtils.hideLoading(context: context);
         //todo:show error

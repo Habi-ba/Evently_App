@@ -3,8 +3,10 @@ import 'package:evently/ui/home/widgets/event_card.dart';
 import 'package:evently/ui/home/widgets/tab_item_widget.dart';
 import 'package:evently/utils/size_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../generated/locale_keys.g.dart';
+import '../../providers/user_provider.dart';
 import '../../utils/app_images.dart';
 
 class HomeTab extends StatefulWidget {
@@ -19,6 +21,7 @@ class _HomeTabState extends State<HomeTab> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    var userProvider = Provider.of<UserProvider>(context);
     List<String> eventNamesList = [
       LocaleKeys.all.tr(),
       LocaleKeys.sport.tr(),
@@ -50,7 +53,7 @@ class _HomeTabState extends State<HomeTab> {
                     ),
                     SizedBox(height: context.scaleHeight(2)),
                     Text(
-                      'John Safwat',
+                      userProvider.currentUser!.name,
                       style: theme.textTheme.titleLarge?.copyWith(
                         fontSize: context.scaleFont(20),
                       ),

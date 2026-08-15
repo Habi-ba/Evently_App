@@ -5,6 +5,7 @@ import 'package:evently/utils/size_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../providers/user_provider.dart';
 import '../../../../utils/app_images.dart';
 import '../../../../utils/colors.dart';
 
@@ -14,6 +15,8 @@ class ProfileTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    var userProvider = Provider.of<UserProvider>(context);
+
     var themeProvider = Provider.of<AppThemeProvider>(context);
 
     return Scaffold(
@@ -24,7 +27,6 @@ class ProfileTab extends StatelessWidget {
             children: [
               SizedBox(height: context.scaleHeight(24)),
 
-              // ====== الأفاتار (لوجو التطبيق داخل دايرة) ======
               CircleAvatar(
                 backgroundImage: AssetImage(AppImages.routeLogoImage),
                 radius: 50,
@@ -33,7 +35,7 @@ class ProfileTab extends StatelessWidget {
               SizedBox(height: context.scaleHeight(14)),
 
               Text(
-                'John Safwat',
+                userProvider.currentUser!.name,
                 style: theme.textTheme.titleLarge?.copyWith(
                   fontSize: context.scaleFont(18),
                 ),
@@ -41,7 +43,7 @@ class ProfileTab extends StatelessWidget {
               SizedBox(height: context.scaleHeight(4)),
 
               Text(
-                'johnsafwat.route@gmail.com',
+                userProvider.currentUser!.email,
                 style: theme.textTheme.labelSmall?.copyWith(
                   fontSize: context.scaleFont(13),
                 ),
@@ -90,7 +92,7 @@ class ProfileTab extends StatelessWidget {
                   color: AppColors.redColor,
                 ),
                 onTap: () {
-                  // TODO: نفذي عملية تسجيل الخروج
+                  // todo: logout
                 },
               ),
             ],
@@ -107,7 +109,6 @@ class ProfileTab extends StatelessWidget {
   }
 }
 
-// ====== ويدجت مساعدة لصف واحد في البروفايل (تايتل + عنصر على اليمين) ======
 class _ProfileTile extends StatelessWidget {
   final String title;
 
