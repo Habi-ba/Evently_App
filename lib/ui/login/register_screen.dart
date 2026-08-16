@@ -7,6 +7,7 @@ import 'package:evently/ui/login/widgets/text_field_widget.dart';
 import 'package:evently/utils/app_images.dart';
 import 'package:evently/utils/app_routes.dart';
 import 'package:evently/utils/dialog_utils.dart';
+import 'package:evently/utils/firebase_utils.dart';
 import 'package:evently/utils/size_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -265,14 +266,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
             );
         //todo:3-save user provider
         MyUser myUser = MyUser(
-            id: credential.user?.uid ?? '',
-            name: nameController.text,
-            email: emailController.text
+          id: credential.user?.uid ?? '',
+          name: nameController.text,
+          email: emailController.text,
         );
         //listen:fales => 34an e7na bra el build
         //m3nah enna m4 3ayzen n3rf haga lama el user yt8yer
         var userProvider = Provider.of<UserProvider>(context, listen: false);
         userProvider.updateUser(myUser);
+        //todo:save user in firestore
+        await FirebaseUtils.addUserInFireStore(myUser);
         //todo:hideLoading
         DialogUtils.hideLoading(context: context);
         //todo:show error
