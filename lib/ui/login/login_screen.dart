@@ -6,12 +6,16 @@ import 'package:evently/ui/login/widgets/text_field_widget.dart';
 import 'package:evently/utils/app_images.dart';
 import 'package:evently/utils/app_routes.dart';
 import 'package:evently/utils/dialog_utils.dart';
+import 'package:evently/utils/firebase_utils.dart';
 import 'package:evently/utils/size_utils.dart';
 import 'package:evently/utils/themed_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/user_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({super.key});
@@ -207,6 +211,17 @@ class _LoginScreenState extends State<LoginScreen> {
               email: emailController.text,
               password: passwordController.text,
             );
+        //todo: read user from firestore
+        var user = await FirebaseUtils.readFromFirstore(
+          credential.user?.uid ?? '',
+        );
+        //todo: save user in provider
+        var userProvider = Provider.of<UserProvider>(context, listen: false);
+        if (user == null) {
+          return;
+        }
+        userProvider.updateUser(user);
+
         //todo:hideLoading
         DialogUtils.hideLoading(context: context);
         //todo:show message

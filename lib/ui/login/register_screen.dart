@@ -285,7 +285,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           context: context,
           message: 'Registered Successfully ',
           posAction: () {
-            Navigator.of(context).pushNamed(AppRoutes.loginScreenRoute);
+            Navigator.of(context).pushNamed(AppRoutes.homeScreenRoute);
           },
         );
       } on FirebaseAuthException catch (e) {
