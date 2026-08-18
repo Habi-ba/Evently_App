@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:evently/models/event.dart';
 import 'package:evently/models/my_user.dart';
 
 class FirebaseUtils {
@@ -11,6 +12,16 @@ class FirebaseUtils {
           fromFirestore:
               (snapshot, options) => MyUser.fromJson(snapshot.data()!),
           toFirestore: (user, options) => user.toJson(),
+        );
+  }
+
+  static CollectionReference<Event> getEventsCollections() {
+    return FirebaseFirestore.instance
+        .collection(Event.collectionName)
+        .withConverter<Event>(
+          fromFirestore:
+              (snapshot, options) => Event.fromJson(snapshot.data()!),
+          toFirestore: (event, options) => event.toJson(),
         );
   }
 
@@ -33,5 +44,13 @@ class FirebaseUtils {
     DocumentSnapshot<MyUser> querySnapShot =
         await getUsersCollections().doc(userId).get();
     return querySnapShot.data();
+  }
+
+  static Future<void> addEventToFireStore(Event event) {
+    var collectionRef = getEventsCollections();
+    var documentRef = collectionRef.doc();
+    //auto id
+    event.eventId = documentRef.id;
+    return documentRef.set(event);
   }
 }

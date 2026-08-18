@@ -1,14 +1,17 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:evently/generated/locale_keys.g.dart';
+import 'package:evently/models/event.dart';
 import 'package:evently/providers/app-theme_provider.dart';
 import 'package:evently/ui/home/add_event/date_or_time_widget.dart';
 import 'package:evently/ui/home/widgets/tab_item_widget.dart';
 import 'package:evently/ui/login/widgets/elevated_button_widget.dart';
 import 'package:evently/ui/login/widgets/text_field_widget.dart';
+import 'package:evently/utils/ToastUtils.dart';
 import 'package:evently/utils/app_images.dart';
+import 'package:evently/utils/firebase_utils.dart';
 import 'package:evently/utils/size_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:flutter_material_design_icons/flutter_material_design_icons.dart';
 import 'package:provider/provider.dart';
 
 class AddEventScreen extends StatefulWidget {
@@ -27,6 +30,8 @@ class _AddEventScreenState extends State<AddEventScreen> {
   String formatDate = '';
   TimeOfDay? selectedTime;
   String formatTime = '';
+  String selectedEventName = '';
+  String selectedEventImage = '';
 
   List<String> eventNamesList = [
     LocaleKeys.sport.tr(),
@@ -35,25 +40,30 @@ class _AddEventScreenState extends State<AddEventScreen> {
     LocaleKeys.book_club.tr(),
     LocaleKeys.meeting.tr(),
   ];
-  List<AssetImage> eventImagesLight = [
-    AssetImage(AppImages.sportLightImage),
-    AssetImage(AppImages.exhibitionLightImage),
-    AssetImage(AppImages.birthdayLightImage),
-    AssetImage(AppImages.bookClubLightImage),
-    AssetImage(AppImages.meetingLightImage),
+  List<String> eventImagesLight = [
+    AppImages.sportLightImage,
+    (AppImages.exhibitionLightImage),
+    (AppImages.birthdayLightImage),
+    (AppImages.bookClubLightImage),
+    (AppImages.meetingLightImage),
   ];
-  List<AssetImage> eventImagesDark = [
-    AssetImage(AppImages.sportDarkImage),
-    AssetImage(AppImages.exhibitionDarkImage),
-    AssetImage(AppImages.birthdayDarkImage),
-    AssetImage(AppImages.bookClubDarkImage),
-    AssetImage(AppImages.meetingDarkImage),
+  List<String> eventImagesDark = [
+    (AppImages.sportDarkImage),
+    (AppImages.exhibitionDarkImage),
+    (AppImages.birthdayDarkImage),
+    (AppImages.bookClubDarkImage),
+    (AppImages.meetingDarkImage),
   ];
 
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     AppThemeProvider themeProvider = Provider.of<AppThemeProvider>(context);
+    selectedEventName = eventNamesList[selectedIndex];
+    selectedEventImage =
+    (themeProvider.isDarkMode
+        ? eventImagesDark[selectedIndex]
+        : eventImagesLight[selectedIndex]);
 
     return Scaffold(
       appBar: AppBar(
@@ -94,10 +104,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(24),
                     image: DecorationImage(
-                      image:
-                          themeProvider.isDarkMode
-                              ? eventImagesDark[selectedIndex]
-                              : eventImagesLight[selectedIndex],
+                      image: AssetImage(selectedEventImage),
                     ),
                     border: Border.all(color: theme.dividerColor),
                   ),
@@ -196,13 +203,40 @@ class _AddEventScreenState extends State<AddEventScreen> {
 
   void addEvent() {
     if (formKey.currentState!.validate() == true) {
-      //todo:add event
       if (selectedTime == null || selectedDate == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(LocaleKeys.please_choose_date_time.tr())),
         );
         return;
       }
+      //todo:add event
+      Event event = Event(
+        eventName: selectedEventName,
+        eventDate: DateTime(
+          selectedDate!.year,
+          selectedDate!.month,
+          selectedDate!.day,
+          selectedTime!.hour,
+          selectedTime!.minute,
+        ),
+        eventDescription: description,
+        eventImage: selectedEventImage,
+        eventTitle: title,
+      );
+      FirebaseUtils.addEventToFireStore(event)
+          .then((value) {
+        ToastUtils.
+        showToastMessage(
+            message: 'Event Added Successfully',
+            backgroundColor: Colors.greenAccent,
+            textColor: Theme
+                .of(context)
+                .primaryColor);
+      })
+          .catchError((error) {
+        print(error.toString());
+      });
+
     }
   }
 

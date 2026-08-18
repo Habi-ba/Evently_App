@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:flutter_material_design_icons/flutter_material_design_icons.dart';
 
 import '../utils/app_images.dart';
 
 class EventCategoryData {
-  final String id; // القيمة اللي هتتخزن في Firestore
+  final String id;
   final String label;
   final IconData icon;
   final String lightImage;
@@ -20,7 +20,6 @@ class EventCategoryData {
 }
 
 class EventCategories {
-  // TODO: لو عندك كاتيجوريز تانية (Meeting, Exhibition) ضيفيهم هنا كمان
   static List<EventCategoryData> all = [
     EventCategoryData(
       id: 'Book club',
