@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:evently/generated/locale_keys.g.dart';
 import 'package:evently/providers/app-theme_provider.dart';
+import 'package:evently/utils/app_routes.dart';
 import 'package:evently/utils/size_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -93,6 +94,12 @@ class ProfileTab extends StatelessWidget {
                 ),
                 onTap: () {
                   // todo: logout
+                  // FirebaseAuth.instance.signOut();
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    AppRoutes.loginScreenRoute,
+                    (route) => false,
+                  );
                 },
               ),
             ],

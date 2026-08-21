@@ -1,27 +1,18 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:evently/ui/home/event_screens/event_image_helper.dart';
+import 'package:evently/utils/ToastUtils.dart';
+import 'package:evently/utils/colors.dart';
+import 'package:evently/utils/firebase_utils.dart';
 import 'package:evently/utils/size_utils.dart';
 import 'package:flutter/material.dart';
 
-import '../../../utils/app_styles.dart';
+import '../../../models/event.dart';
 import '../../../utils/themed_image.dart';
 
 class EventCard extends StatelessWidget {
-  final String day;
-  final String month;
-  final String title;
-  final String subtitle;
-  final String lightImage;
-  final String darkImage;
-  final bool isFavorite;
+  final Event event;
 
-  const EventCard({
-    required this.day,
-    required this.month,
-    required this.title,
-    required this.subtitle,
-    required this.lightImage,
-    required this.darkImage,
-    required this.isFavorite,
-  });
+  const EventCard({required this.event});
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +36,10 @@ class EventCard extends StatelessWidget {
         children: [
           Positioned(
             child: ThemedImage(
-              lightImage: lightImage,
-              darkImage: darkImage,
+              lightImage: EventImageHelper.lightImageFor(
+                  event.eventCategoryIndex),
+              darkImage: EventImageHelper.darkImageFor(
+                  event.eventCategoryIndex),
               width: context.scaleWidth(343),
               height: context.scaleHeight(193),
               fit: BoxFit.cover,
@@ -65,42 +58,72 @@ class EventCard extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  '$day $month',
+                  DateFormat('dd MMMM').format(event.eventDate),
                   style: theme.textTheme.headlineMedium,
                 ),
               ),
               SizedBox(height: context.scaleHeight(2)),
               Spacer(),
+
               Container(
-                padding: EdgeInsets.all(8),
+                height: 50,
+                padding: EdgeInsets.symmetric(
+                  horizontal: context.scaleWidth(16),
+                  vertical: context.scaleHeight(14),
+                ),
                 decoration: BoxDecoration(
                   color: Theme.of(context).scaffoldBackgroundColor,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: Theme.of(context).colorScheme.outline,
                   ),
                 ),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
                       child: Text(
-                        subtitle,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          fontSize: context.scaleFont(13),
+                        event.eventTitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontSize: context.scaleFont(16),
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(left: context.scaleWidth(8)),
-                      child: Icon(
-                        isFavorite ? Icons.favorite : Icons.favorite_border,
-                        size: context.scaleFont(20),
-                        color:
-                            isFavorite
-                                ? theme.colorScheme.primary
-                                : theme.iconTheme.color,
+                    SizedBox(width: context.scaleWidth(8)),
+                    IconButton(
+
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      iconSize: context.scaleFont(26),
+                      icon: Icon(
+                        event.isFavourite
+                            ? Icons.favorite
+                            : Icons.favorite_border,
                       ),
+                      color:
+                      event.isFavourite
+                          ? theme.colorScheme.primary
+                          : theme.iconTheme.color,
+                      onPressed: () {
+                        FirebaseUtils.updateIsFavourite(event).
+                        then((value) {
+                          return ToastUtils.
+                          showToastMessage(
+                              message: 'Event Updated Successfully',
+                              backgroundColor: Colors.green,
+                              textColor: AppColors.whiteColor);
+                        },).catchError((error) {
+                          return ToastUtils.
+                          showToastMessage(
+                              message: error.toString(),
+                              backgroundColor: Colors.red,
+                              textColor: AppColors.whiteColor);
+                        },);
+                      },
                     ),
                   ],
                 ),

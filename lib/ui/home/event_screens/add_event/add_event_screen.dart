@@ -2,20 +2,24 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:evently/generated/locale_keys.g.dart';
 import 'package:evently/models/event.dart';
 import 'package:evently/providers/app-theme_provider.dart';
-import 'package:evently/ui/home/add_event/date_or_time_widget.dart';
 import 'package:evently/ui/home/widgets/tab_item_widget.dart';
 import 'package:evently/ui/login/widgets/elevated_button_widget.dart';
 import 'package:evently/ui/login/widgets/text_field_widget.dart';
 import 'package:evently/utils/ToastUtils.dart';
-import 'package:evently/utils/app_images.dart';
+import 'package:evently/utils/dialog_utils.dart';
 import 'package:evently/utils/firebase_utils.dart';
 import 'package:evently/utils/size_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_design_icons/flutter_material_design_icons.dart';
 import 'package:provider/provider.dart';
 
+import '../event_image_helper.dart';
+import 'date_or_time_widget.dart';
+
 class AddEventScreen extends StatefulWidget {
-  AddEventScreen({super.key});
+  final Event? existingEvent; // null => Add flow, non-null => Edit flow
+
+  const AddEventScreen({super.key, this.existingEvent});
 
   @override
   State<AddEventScreen> createState() => _AddEventScreenState();
@@ -26,12 +30,16 @@ class _AddEventScreenState extends State<AddEventScreen> {
   var selectedIndex = 0;
   var title = '';
   var description = '';
+  final titleController = TextEditingController();
+  final descriptionController = TextEditingController();
   DateTime? selectedDate;
   String formatDate = '';
   TimeOfDay? selectedTime;
   String formatTime = '';
   String selectedEventName = '';
   String selectedEventImage = '';
+
+  bool get isEditing => widget.existingEvent != null;
 
   List<String> eventNamesList = [
     LocaleKeys.sport.tr(),
@@ -40,37 +48,59 @@ class _AddEventScreenState extends State<AddEventScreen> {
     LocaleKeys.book_club.tr(),
     LocaleKeys.meeting.tr(),
   ];
-  List<String> eventImagesLight = [
-    AppImages.sportLightImage,
-    (AppImages.exhibitionLightImage),
-    (AppImages.birthdayLightImage),
-    (AppImages.bookClubLightImage),
-    (AppImages.meetingLightImage),
-  ];
-  List<String> eventImagesDark = [
-    (AppImages.sportDarkImage),
-    (AppImages.exhibitionDarkImage),
-    (AppImages.birthdayDarkImage),
-    (AppImages.bookClubDarkImage),
-    (AppImages.meetingDarkImage),
-  ];
+
+  // NOTE: previously this screen had its own local eventImagesLight/eventImagesDark
+  // lists, duplicating EventImageHelper. Now using the shared helper instead so
+  // there's a single source of truth for the category -> image mapping
+  // (also used by EventCard and EventDetailsScreen).
+
+  @override
+  void initState() {
+    super.initState();
+    // Prefill fields when editing an existing event.
+    // ASSUMPTION: eventCategoryIndex is stored as index+1 (see addEvent() below),
+    // so we subtract 1 here to map back to the 0-based eventNamesList index.
+    if (isEditing) {
+      final event = widget.existingEvent!;
+      selectedIndex = event.eventCategoryIndex - 1;
+      title = event.eventTitle;
+      description = event.eventDescription;
+      titleController.text = event.eventTitle;
+      descriptionController.text = event.eventDescription;
+      selectedDate = event.eventDate;
+      selectedTime = TimeOfDay.fromDateTime(event.eventDate);
+      formatDate = DateFormat('dd/MM/yyyy').format(event.eventDate);
+      // formatTime is set in build() once we have `context` for TimeOfDay.format(context)
+    }
+  }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    descriptionController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     AppThemeProvider themeProvider = Provider.of<AppThemeProvider>(context);
     selectedEventName = eventNamesList[selectedIndex];
-    selectedEventImage =
-    (themeProvider.isDarkMode
-        ? eventImagesDark[selectedIndex]
-        : eventImagesLight[selectedIndex]);
+    // Uses the shared helper now (index+1 offset handled inside it).
+    selectedEventImage = themeProvider.isDarkMode
+        ? EventImageHelper.darkImageFor(selectedIndex + 1)
+        : EventImageHelper.lightImageFor(selectedIndex + 1);
+
+    if (isEditing && selectedTime != null && formatTime.isEmpty) {
+      formatTime = selectedTime!.format(context);
+    }
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         centerTitle: true,
         title: Text(
-          LocaleKeys.add_event.tr(),
+          isEditing ? LocaleKeys.edit_event.tr() : LocaleKeys.add_event.tr(),
           style: theme.textTheme.headlineSmall,
         ),
         leading: InkWell(
@@ -138,6 +168,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
                 SizedBox(height: context.scaleHeight(8)),
                 TextFieldWidget(
                   hintDisplayedTxt: LocaleKeys.event_title_hint.tr(),
+                  controller: titleController,
                   onChanged: (text) {
                     title = text;
                   },
@@ -156,6 +187,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
                 SizedBox(height: context.scaleHeight(8)),
                 TextFieldWidget(
                   hintDisplayedTxt: LocaleKeys.event_description_hint.tr(),
+                  controller: descriptionController,
                   lines: 4,
                   onChanged: (text) {
                     description = text;
@@ -172,26 +204,25 @@ class _AddEventScreenState extends State<AddEventScreen> {
                   eventDateOrTime: LocaleKeys.event_date.tr(),
                   onChooseDateOrTime: chooseDate,
                   chooseDateOrTime:
-                      selectedDate == null
-                          ? LocaleKeys.choose_date.tr()
-                          :
-                          //option1: '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}',
-                          // option2:
-                          formatDate,
+                  selectedDate == null
+                      ? LocaleKeys.choose_date.tr()
+                      : formatDate,
                 ),
                 DateOrTimeWidget(
                   icon: Icon(MdiIcons.clock, color: theme.iconTheme.color),
                   eventDateOrTime: LocaleKeys.event_time.tr(),
                   onChooseDateOrTime: chooseTime,
                   chooseDateOrTime:
-                      selectedTime == null
-                          ? LocaleKeys.choose_time.tr()
-                          : formatTime,
+                  selectedTime == null
+                      ? LocaleKeys.choose_time.tr()
+                      : formatTime,
                 ),
                 SizedBox(height: context.scaleHeight(15)),
                 ElevatedButtonWidget(
-                  onTab: addEvent,
-                  buttonText: LocaleKeys.add_event.tr(),
+                  onTab: isEditing ? updateEvent : addEvent,
+                  buttonText: isEditing
+                      ? LocaleKeys.update_event.tr()
+                      : LocaleKeys.add_event.tr(),
                 ),
               ],
             ),
@@ -209,8 +240,57 @@ class _AddEventScreenState extends State<AddEventScreen> {
         );
         return;
       }
-      //todo:add event
       Event event = Event(
+        eventCategoryIndex: selectedIndex + 1,
+        eventName: selectedEventName,
+        eventDate: DateTime(
+          selectedDate!.year,
+          selectedDate!.month,
+          selectedDate!.day,
+          selectedTime!.hour,
+          selectedTime!.minute,
+        ),
+        eventDescription: description,
+        eventImage: selectedEventImage,
+        // NOTE: no longer read for display (EventCard/EventDetailsScreen recompute from eventCategoryIndex), kept only because the field is required in the model.
+        eventTitle: title,
+      );
+      DialogUtils.showLoading(
+          context: context, loadingText: LocaleKeys.loading.tr());
+      FirebaseUtils.addEventToFireStore(event)
+          .then((value) {
+        DialogUtils.hideLoading(context: context);
+        ToastUtils.showToastMessage(
+            message: 'Event Added Successfully',
+            backgroundColor: Colors.greenAccent,
+            textColor: Theme
+                .of(context)
+                .primaryColor);
+        Navigator.pop(context);
+      })
+          .catchError((error) {
+        DialogUtils.hideLoading(context: context);
+        ToastUtils.showToastMessage(
+            message: error.toString(),
+            backgroundColor: Colors.red,
+            textColor: Theme
+                .of(context)
+                .colorScheme
+                .onPrimary);
+      });
+    }
+  }
+
+  void updateEvent() {
+    if (formKey.currentState!.validate() == true) {
+      if (selectedTime == null || selectedDate == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(LocaleKeys.please_choose_date_time.tr())),
+        );
+        return;
+      }
+      Event updatedEvent = widget.existingEvent!.copyWith(
+        eventCategoryIndex: selectedIndex + 1,
         eventName: selectedEventName,
         eventDate: DateTime(
           selectedDate!.year,
@@ -223,27 +303,36 @@ class _AddEventScreenState extends State<AddEventScreen> {
         eventImage: selectedEventImage,
         eventTitle: title,
       );
-      FirebaseUtils.addEventToFireStore(event)
+      DialogUtils.showLoading(
+          context: context, loadingText: LocaleKeys.loading.tr());
+      FirebaseUtils.updateEvent(updatedEvent)
           .then((value) {
-        ToastUtils.
-        showToastMessage(
-            message: 'Event Added Successfully',
+        DialogUtils.hideLoading(context: context);
+        ToastUtils.showToastMessage(
+            message: 'Event Updated Successfully',
             backgroundColor: Colors.greenAccent,
             textColor: Theme
                 .of(context)
                 .primaryColor);
+        Navigator.pop(context);
       })
           .catchError((error) {
-        print(error.toString());
+        DialogUtils.hideLoading(context: context);
+        ToastUtils.showToastMessage(
+            message: error.toString(),
+            backgroundColor: Colors.red,
+            textColor: Theme
+                .of(context)
+                .colorScheme
+                .onPrimary);
       });
-
     }
   }
 
   Future<void> chooseDate() async {
     var chooseDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: selectedDate ?? DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(Duration(days: 365)),
     );
@@ -257,7 +346,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
   void chooseTime() async {
     var chooseTime = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialTime: selectedTime ?? TimeOfDay.now(),
     );
     if (chooseTime != null) {
       selectedTime = chooseTime;

@@ -1,13 +1,16 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:evently/models/event.dart';
+import 'package:evently/providers/app_language_provider.dart';
 import 'package:evently/ui/home/widgets/event_card.dart';
 import 'package:evently/ui/home/widgets/tab_item_widget.dart';
+import 'package:evently/utils/firebase_utils.dart';
 import 'package:evently/utils/size_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../generated/locale_keys.g.dart';
 import '../../providers/user_provider.dart';
-import '../../utils/app_images.dart';
+import 'event_screens/event_details_screen.dart';
 
 class HomeTab extends StatefulWidget {
   const HomeTab({super.key});
@@ -18,16 +21,43 @@ class HomeTab extends StatefulWidget {
 
 class _HomeTabState extends State<HomeTab> {
   int selectedIndex = 0;
+  List<Event> eventList = [];
+  List<Event> filterEventList = [];
+
+  Stream<List<Event>>? eventStream;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    //getAllEvents1();
+    eventStream = FirebaseUtils.getAllEvents2();
+  }
+
+  void updateStream(int index) {
+    selectedIndex = index;
+    if (selectedIndex == 0) {
+      eventStream = FirebaseUtils.getAllEvents2();
+    } else {
+      eventStream = FirebaseUtils.getAllFilteredEvents(
+        selectedIndex: selectedIndex,
+      );
+    }
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     var userProvider = Provider.of<UserProvider>(context);
+    var langProvider = Provider.of<AppLanguageProvider>(context);
     List<String> eventNamesList = [
       LocaleKeys.all.tr(),
       LocaleKeys.sport.tr(),
+      LocaleKeys.exhibition.tr(),
       LocaleKeys.birthday.tr(),
       LocaleKeys.book_club.tr(),
-      LocaleKeys.exhibition.tr(),
+      LocaleKeys.meeting.tr(),
     ];
 
     return Padding(
@@ -46,7 +76,7 @@ class _HomeTabState extends State<HomeTab> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Welcome Back',
+                      LocaleKeys.welcome_back.tr(),
                       style: theme.textTheme.labelSmall?.copyWith(
                         fontSize: context.scaleFont(13),
                       ),
@@ -84,13 +114,22 @@ class _HomeTabState extends State<HomeTab> {
                         color: theme.colorScheme.primary,
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: Text(
-                        'EN',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onPrimary,
-                          fontSize: context.scaleFont(12),
-                        ),
-                      ),
+                      child:
+                          context.locale.languageCode == 'en'
+                              ? Text(
+                                'EN',
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onPrimary,
+                                  fontSize: context.scaleFont(12),
+                                ),
+                              )
+                              : Text(
+                                'ع',
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onPrimary,
+                                  fontSize: context.scaleFont(12),
+                                ),
+                              ),
                     ),
                   ],
                 ),
@@ -110,8 +149,7 @@ class _HomeTabState extends State<HomeTab> {
                 ),
                 tabAlignment: TabAlignment.start,
                 onTap: (index) {
-                  selectedIndex = index;
-                  setState(() {});
+                  updateStream(index);
                 },
 
                 tabs:
@@ -128,37 +166,59 @@ class _HomeTabState extends State<HomeTab> {
             SizedBox(height: context.scaleHeight(16)),
 
             Expanded(
-              child: ListView(
-                padding: EdgeInsets.only(bottom: context.scaleHeight(90)),
-                children: [
-                  EventCard(
-                    day: '21',
-                    month: 'Jan',
-                    title: 'Birthday',
-                    subtitle: 'This is a Birthday Party',
-                    lightImage: AppImages.birthdayLightImage,
-                    darkImage: AppImages.birthdayDarkImage,
-                    isFavorite: true,
-                  ),
-                  EventCard(
-                    day: '22',
-                    month: 'Jan',
-                    title: 'Meeting',
-                    subtitle: 'Meeting for Updating The Development Method',
-                    lightImage: AppImages.meetingLightImage,
-                    darkImage: AppImages.meetingDarkImage,
-                    isFavorite: false,
-                  ),
-                  EventCard(
-                    day: '23',
-                    month: 'Jan',
-                    title: 'Exhibition',
-                    subtitle: 'Discover unique exhibitions and talents',
-                    lightImage: AppImages.exhibitionLightImage,
-                    darkImage: AppImages.exhibitionDarkImage,
-                    isFavorite: false,
-                  ),
-                ],
+              child: StreamBuilder<List<Event>>(
+                stream: eventStream,
+                builder: (context, snapshot) {
+                  //todo:loading
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text(
+                        snapshot.error.toString(),
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                    );
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Center(
+                      child: Text(
+                        LocaleKeys.no_events_found_yet.tr(),
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                    );
+                  } else {
+                    eventList = snapshot.data!;
+
+                    return ListView.separated(
+                      padding: EdgeInsets.only(bottom: context.scaleHeight(90)),
+                      itemBuilder: (BuildContext context, int index) {
+                        return InkWell(
+                          // borderRadius: BorderRadius.circular(16),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (_) => EventDetailsScreen(
+                                      event: eventList[index],
+                                    ),
+                              ),
+                            );
+                          },
+                          child: EventCard(event: eventList[index]),
+                        );
+                      },
+                      separatorBuilder: (BuildContext context, int index) {
+                        return SizedBox(height: context.scaleHeight(10));
+                      },
+                      itemCount: eventList.length,
+                    );
+                  }
+                },
               ),
             ),
           ],
