@@ -182,4 +182,5 @@ class AppStyles {
     fontWeight: FontWeight.w500,
     color: AppColors.mainDarkMode,
   );
+
 }

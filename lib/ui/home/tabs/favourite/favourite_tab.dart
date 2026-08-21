@@ -1,14 +1,30 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:evently/generated/locale_keys.g.dart';
 import 'package:evently/ui/login/widgets/text_field_widget.dart';
+import 'package:evently/utils/firebase_utils.dart';
 import 'package:evently/utils/size_utils.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../utils/app_images.dart';
+import '../../../../models/event.dart';
 import '../../widgets/event_card.dart';
 
-class FavouriteTab extends StatelessWidget {
+class FavouriteTab extends StatefulWidget {
   const FavouriteTab({super.key});
+
+  @override
+  State<FavouriteTab> createState() => _FavouriteTabState();
+}
+
+class _FavouriteTabState extends State<FavouriteTab> {
+  Stream<List<Event>>? favouriteStream;
+  List<Event> favouriteList = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    favouriteStream = FirebaseUtils.getAllFavouriteEvents();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,37 +45,45 @@ class FavouriteTab extends StatelessWidget {
             ),
 
             Expanded(
-              child: ListView(
-                padding: EdgeInsets.only(bottom: context.scaleHeight(90)),
-                children: [
-                  EventCard(
-                    day: '21',
-                    month: 'Jan',
-                    title: 'Birthday',
-                    subtitle: 'This is a Birthday Party',
-                    lightImage: AppImages.birthdayLightImage,
-                    darkImage: AppImages.birthdayDarkImage,
-                    isFavorite: true,
-                  ),
-                  EventCard(
-                    day: '22',
-                    month: 'Jan',
-                    title: 'Meeting',
-                    subtitle: 'Meeting for Updating The Development Method',
-                    lightImage: AppImages.meetingLightImage,
-                    darkImage: AppImages.meetingDarkImage,
-                    isFavorite: false,
-                  ),
-                  EventCard(
-                    day: '23',
-                    month: 'Jan',
-                    title: 'Exhibition',
-                    subtitle: 'Discover unique exhibitions and talents',
-                    lightImage: AppImages.exhibitionLightImage,
-                    darkImage: AppImages.exhibitionDarkImage,
-                    isFavorite: false,
-                  ),
-                ],
+              child: StreamBuilder<List<Event>>(
+                stream: favouriteStream,
+                builder: (context, snapshot) {
+                  //todo:loading
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text(
+                        snapshot.error.toString(),
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                    );
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Center(
+                      child: Text(
+                        LocaleKeys.no_events_found_yet.tr(),
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                    );
+                  } else {
+                    favouriteList = snapshot.data!;
+
+                    return ListView.separated(
+                      padding: EdgeInsets.only(bottom: context.scaleHeight(90)),
+                      itemBuilder: (BuildContext context, int index) {
+                        return EventCard(event: favouriteList[index]);
+                      },
+                      separatorBuilder: (BuildContext context, int index) {
+                        return SizedBox(height: context.scaleHeight(10));
+                      },
+                      itemCount: favouriteList.length,
+                    );
+                  }
+                },
               ),
             ),
           ],

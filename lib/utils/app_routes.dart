@@ -5,4 +5,5 @@ class AppRoutes {
   static const String introScreenRoute = 'introduction_screen';
   static const String personalizeScreenRoute = 'personalize_screen';
   static const String addEventScreenRoute = 'add_event_screen';
+  static const String eventDetailsScreenRoute = 'event_details_screen';
 }

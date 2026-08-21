@@ -40,6 +40,8 @@ class AppTheme {
       labelMedium: AppStyles.semiBold14MainColor,
       titleSmall: AppStyles.med16MainColor,
       displaySmall: AppStyles.reg14MainLight,
+        displayLarge: AppStyles.med16Black,
+        displayMedium: AppStyles.med16Disable
     ),
   );
   static final ThemeData darkTheme = ThemeData(
@@ -78,6 +80,8 @@ class AppTheme {
       labelMedium: AppStyles.semiBold14MainColorDark,
       titleSmall: AppStyles.med16MainDark,
       displaySmall: AppStyles.reg14MainDark,
+        displayLarge: AppStyles.med16MainDark,
+        displayMedium: AppStyles.med16White
     ),
   );
 }
