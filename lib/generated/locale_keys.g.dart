@@ -73,4 +73,26 @@ abstract class LocaleKeys {
   static const please_enter_confirm_password = 'please_enter_confirm_password';
   static const passwords_do_not_match = 'passwords_do_not_match';
   static const password_min_length = 'password_min_length';
+  static const no_events_found_yet = 'no_events_found_yet';
+  static const delete_event = 'delete_event';
+  static const confirm_delete_event = 'confirm_delete_event';
+  static const delete = 'delete';
+  static const cancel = 'cancel';
+  static const loading = 'loading';
+  static const ok = 'ok';
+  static const success = 'success';
+  static const error = 'error';
+  static const waiting = 'waiting';
+  static const something_went_wrong = 'something_went_wrong';
+  static const registered_successfully = 'registered_successfully';
+  static const email_already_registered = 'email_already_registered';
+  static const weak_password = 'weak_password';
+  static const invalid_email = 'invalid_email';
+  static const registration_disabled = 'registration_disabled';
+  static const login_successfully = 'login_successfully';
+  static const user_not_found = 'user_not_found';
+  static const wrong_password = 'wrong_password';
+  static const invalid_credential = 'invalid_credential';
+  static const could_not_get_user_information =
+      'could_not_get_user_information';
 }

@@ -252,72 +252,132 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void onSignUp() async {
-    if (formKey.currentState!.validate() == true) {
-      // todo: register logic
-      try {
-        //todo:1-show Loading
+    if (!formKey.currentState!.validate()) {
+      return;
+    }
 
-        DialogUtils.showLoading(context: context, loadingText: 'Waiting...');
-        //todo:2-fireAuth
-        final credential = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(
-              email: emailController.text,
-              password: passwordController.text,
-            );
-        //todo:3-save user provider
-        MyUser myUser = MyUser(
-          id: credential.user?.uid ?? '',
-          name: nameController.text,
-          email: emailController.text,
-        );
-        //listen:fales => 34an e7na bra el build
-        //m3nah enna m4 3ayzen n3rf haga lama el user yt8yer
-        var userProvider = Provider.of<UserProvider>(context, listen: false);
-        userProvider.updateUser(myUser);
-        //todo:save user in firestore
-        await FirebaseUtils.addUserInFireStore(myUser);
-        //todo:hideLoading
-        DialogUtils.hideLoading(context: context);
-        //todo:show error
-        DialogUtils.showMessage(
-          posActionName: 'Ok',
-          title: 'Success',
-          context: context,
-          message: 'Registered Successfully ',
-          posAction: () {
-            Navigator.of(context).pushNamed(AppRoutes.homeScreenRoute);
-          },
-        );
-      } on FirebaseAuthException catch (e) {
-        DialogUtils.hideLoading(context: context);
-        String message;
-        switch (e.code) {
-          case 'email-already-in-use':
-            message = 'This email is already registered.';
-            break;
-          case 'weak-password':
-            message = 'The password provided is too weak.';
-            break;
-          case 'invalid-email':
-            message = 'Invalid email address.';
-            break;
-          case 'operation-not-allowed':
-            message = 'Registration is currently disabled.';
-            break;
-          default:
-            message = e.message ?? 'Something went wrong.';
-        }
-        DialogUtils.showMessage(
-          posActionName: 'Ok',
-          title: 'Error',
-          context: context,
-          message: message,
+    try {
+      DialogUtils.showLoading(
+        context: context,
+        loadingText: LocaleKeys.waiting.tr(),
+      );
+
+      // 1. Firebase Auth
+      final credential = await FirebaseUtils.registerWithEmail(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+
+      // 2. Create MyUser
+      MyUser myUser = MyUser(
+        id: credential.user?.uid ?? '',
+        name: nameController.text,
+        email: emailController.text,
+      );
+
+      // 3. Update Provider
+      var userProvider = Provider.of<UserProvider>(
+        context,
+        listen: false,
+      );
+
+      userProvider.updateUser(myUser);
+
+      // 4. Save in Firestore
+      await FirebaseUtils.addUserInFireStore(myUser);
+
+      // 5. Hide loading
+      DialogUtils.hideLoading(context: context);
+
+      // 6. Show success
+      DialogUtils.showMessage(
+        posActionName: LocaleKeys.ok.tr(),
+        title: LocaleKeys.success.tr(),
+        context: context,
+        message: LocaleKeys.registered_successfully.tr(),
+        posAction: () {
+          Navigator.of(context).pushNamed(
+            AppRoutes.homeScreenRoute,
+          );
+        },
+      );
+    } on FirebaseAuthException catch (e) {
+      DialogUtils.hideLoading(context: context);
+
+      String message;
+
+      switch (e.code) {
+        case 'email-already-in-use':
+          message = LocaleKeys.email_already_registered.tr();
+          break;
+
+        case 'weak-password':
+          message = LocaleKeys.weak_password.tr();
+          break;
+
+        case 'invalid-email':
+          message = LocaleKeys.invalid_email.tr();
+          break;
+
+        case 'operation-not-allowed':
+          message = LocaleKeys.registration_disabled.tr();
+          break;
+
+        default:
+          message = LocaleKeys.something_went_wrong.tr();
+      }
+
+      DialogUtils.showMessage(
+        posActionName: LocaleKeys.ok.tr(),
+        title: LocaleKeys.error.tr(),
+        context: context,
+        message: message,
+      );
+    }
+  }
+
+  void onTab2() async {
+    try {
+      DialogUtils.showLoading(
+          context: context, loadingText: LocaleKeys.waiting.tr());
+
+      final credential = await FirebaseUtils.signInWithGoogle();
+
+      MyUser myUser = MyUser(
+        id: credential.user?.uid ?? '',
+        name: credential.user?.displayName ?? '',
+        email: credential.user?.email ?? '',
+      );
+
+      var userProvider = Provider.of<UserProvider>(context, listen: false);
+      userProvider.updateUser(myUser);
+
+      await FirebaseUtils.addUserInFireStore(myUser);
+
+      DialogUtils.hideLoading(context: context);
+
+      DialogUtils.showMessage(
+        posActionName: LocaleKeys.ok.tr(),
+        title: LocaleKeys.success.tr(),
+        context: context,
+        message: LocaleKeys.registered_successfully.tr(),
+        posAction: () {
+          Navigator.of(context).pushNamed(AppRoutes.homeScreenRoute);
+        },
+      );
+    } on FirebaseAuthException catch (e) {
+      DialogUtils.hideLoading(context: context);
+      DialogUtils.showMessage(
+        posActionName: LocaleKeys.ok.tr(),
+        title: LocaleKeys.error.tr(),
+        context: context,
+        message: e.message ?? LocaleKeys.something_went_wrong.tr(),
         );
       } catch (e) {
         DialogUtils.hideLoading(context: context);
         DialogUtils.showMessage(
-          posActionName: 'Ok',
-          title: 'Error',
+          posActionName: LocaleKeys.ok.tr(),
+          title: LocaleKeys.error.tr(),
           context: context,
           message: e.toString(),
         );
@@ -325,5 +385,3 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  void onTab2() {}
-}

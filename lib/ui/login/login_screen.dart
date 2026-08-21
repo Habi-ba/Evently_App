@@ -15,6 +15,7 @@ import 'package:flutter_material_design_icons/flutter_material_design_icons.dart
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/my_user.dart';
 import '../../providers/user_provider.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -183,7 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   SizedBox(height: context.scaleHeight(32)),
                   OutlinedButtonWidget(
-                    onTap: onTab2,
+                    onTap: onLoginWithGoogle,
                     text: LocaleKeys.login_with_google.tr(),
                     prefixIcon: SvgPicture.asset(
                       AppImages.googleLogoImage,
@@ -205,12 +206,12 @@ class _LoginScreenState extends State<LoginScreen> {
       //todo:login
       try {
         //todo:show loading
-        DialogUtils.showLoading(context: context, loadingText: 'Loading ....');
-        final credential = await FirebaseAuth.instance
-            .signInWithEmailAndPassword(
-              email: emailController.text,
-              password: passwordController.text,
-            );
+        DialogUtils.showLoading(
+            context: context, loadingText: LocaleKeys.loading.tr());
+        final credential = await FirebaseUtils.loginWithEmail(
+          email: emailController.text,
+          password: passwordController.text,
+        );
         //todo: read user from firestore
         var user = await FirebaseUtils.readFromFirstore(
           credential.user?.uid ?? '',
@@ -226,10 +227,10 @@ class _LoginScreenState extends State<LoginScreen> {
         DialogUtils.hideLoading(context: context);
         //todo:show message
         DialogUtils.showMessage(
-          posActionName: 'Ok',
-          title: 'Success',
+          posActionName: LocaleKeys.ok.tr(),
+          title: LocaleKeys.success.tr(),
           context: context,
-          message: 'Login Successfully ',
+          message: LocaleKeys.login_successfully.tr(),
           posAction: () {
             Navigator.of(context).pushNamed(AppRoutes.homeScreenRoute);
           },
@@ -240,23 +241,23 @@ class _LoginScreenState extends State<LoginScreen> {
         String message;
         switch (e.code) {
           case 'user-not-found':
-            message = 'No user found for that email.';
+            message = LocaleKeys.user_not_found.tr();
             break;
           case 'wrong-password':
-            message = 'Wrong password provided for that user.';
+            message = LocaleKeys.wrong_password.tr();
             break;
           case 'invalid-email':
-            message = 'Invalid email address.';
+            message = LocaleKeys.invalid_email.tr();
             break;
           case 'invalid-credential':
-            message = 'Incorrect email or password.';
+            message = LocaleKeys.invalid_credential.tr();
             break;
           default:
-            message = e.message ?? 'Something went wrong.';
+            message = e.message ?? LocaleKeys.something_went_wrong.tr();
         }
         DialogUtils.showMessage(
-          posActionName: 'Ok',
-          title: 'Error',
+          posActionName: LocaleKeys.ok.tr(),
+          title: LocaleKeys.error.tr(),
           context: context,
           message: message,
         );
@@ -265,8 +266,8 @@ class _LoginScreenState extends State<LoginScreen> {
         DialogUtils.hideLoading(context: context);
         //todo:show message
         DialogUtils.showMessage(
-          posActionName: 'Ok',
-          title: 'Error',
+          posActionName: LocaleKeys.ok.tr(),
+          title: LocaleKeys.error.tr(),
           context: context,
           message: e.toString(),
         );
@@ -274,5 +275,70 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  void onTab2() {}
+
+  void onLoginWithGoogle() async {
+    try {
+      DialogUtils.showLoading(
+        context: context,
+        loadingText: LocaleKeys.waiting.tr(),
+      );
+
+      final credential = await FirebaseUtils.signInWithGoogle();
+
+      final user = credential.user;
+
+      if (user == null) {
+        throw FirebaseAuthException(
+          code: 'user-not-found',
+          message: LocaleKeys.user_not_found.tr(),
+        );
+      }
+
+      MyUser myUser = MyUser(
+        id: user.uid,
+        name: user.displayName ?? '',
+        email: user.email ?? '',
+      );
+
+      var userProvider = Provider.of<UserProvider>(
+        context,
+        listen: false,
+      );
+
+      userProvider.updateUser(myUser);
+
+      DialogUtils.hideLoading(context: context);
+
+      DialogUtils.showMessage(
+        posActionName: LocaleKeys.ok.tr(),
+        title: LocaleKeys.success.tr(),
+        context: context,
+        message: LocaleKeys.login_successfully.tr(),
+        posAction: () {
+          Navigator.of(context).pushNamed(
+            AppRoutes.homeScreenRoute,
+          );
+        },
+      );
+    } on FirebaseAuthException catch (e) {
+      DialogUtils.hideLoading(context: context);
+
+      DialogUtils.showMessage(
+        posActionName: LocaleKeys.ok.tr(),
+        title: LocaleKeys.error.tr(),
+        context: context,
+        message: e.message ?? LocaleKeys.something_went_wrong.tr(),
+      );
+    } catch (e) {
+      DialogUtils.hideLoading(context: context);
+
+      DialogUtils.showMessage(
+        posActionName: LocaleKeys.ok.tr(),
+        title: LocaleKeys.error.tr(),
+        context: context,
+        message: e.toString(),
+      );
+    }
+  }
 }
+
