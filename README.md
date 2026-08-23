@@ -1,1 +1,1 @@
-# Evently_App
+# Evently
