@@ -2,8 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:evently/ui/intro/pages_list.dart';
 import 'package:evently/utils/app_images.dart';
 import 'package:evently/utils/app_routes.dart';
-import 'package:evently/utils/app_styles.dart';
-import 'package:evently/utils/colors.dart';
 import 'package:evently/utils/size_utils.dart';
 import 'package:evently/utils/themed_image.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +31,7 @@ class _IntroScreenState extends State<IntroScreen> {
   }
 
   void _goToHome() {
-    Navigator.pushReplacementNamed(context, AppRoutes.homeScreenRoute);
+    Navigator.pushReplacementNamed(context, AppRoutes.loginScreenRoute);
   }
 
   void _nextPage() {

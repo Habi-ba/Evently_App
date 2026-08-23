@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
-      initialRoute: 'register_screen',
+      initialRoute: 'personalize_screen',
       routes: {
         AppRoutes.homeScreenRoute: (context) => HomeScreen(),
         AppRoutes.introScreenRoute: (context) => IntroScreen(),
