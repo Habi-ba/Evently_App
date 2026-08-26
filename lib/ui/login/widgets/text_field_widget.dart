@@ -3,18 +3,17 @@ import 'package:evently/utils/size_utils.dart';
 import 'package:flutter/material.dart';
 
 typedef OnChanged = void Function(String)?;
-typedef OnValidator = String ?Function(String?)?;
+typedef OnValidator = String? Function(String?)?;
 
 class TextFieldWidget extends StatelessWidget {
-  final Icon? sufIcon;
+  final Widget? sufIcon;
   final Icon? prefIcon;
   final String hintDisplayedTxt;
   final int? lines;
   final TextEditingController? controller;
   final OnChanged onChanged;
   final OnValidator validator;
-
-
+  final bool? obscure;
 
   const TextFieldWidget({
     super.key,
@@ -24,13 +23,16 @@ class TextFieldWidget extends StatelessWidget {
     this.lines,
     this.onChanged,
     this.controller,
-    this.validator
+    this.validator,
+    this.obscure
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       controller: controller,
+      obscureText: obscure ?? false,
       onChanged: onChanged,
       validator: validator,
       maxLines: lines ?? 1,
@@ -45,6 +47,13 @@ class TextFieldWidget extends StatelessWidget {
         hintStyle: Theme.of(context).textTheme.labelSmall,
         prefixIcon: prefIcon,
         suffixIcon: sufIcon,
+        border: _OutlineBorderBulider(
+          context,
+          Theme
+              .of(context)
+              .colorScheme
+              .outline,
+        ),
         enabledBorder: _OutlineBorderBulider(
           context,
           Theme.of(context).colorScheme.outline,
@@ -53,11 +62,10 @@ class TextFieldWidget extends StatelessWidget {
           context,
           Theme.of(context).colorScheme.outline,
         ),
-        errorBorder: _OutlineBorderBulider(context, AppColors.redColor),
-          focusedErrorBorder: _OutlineBorderBulider(
-              context, AppColors.redColor),
-          errorStyle: TextStyle(color: AppColors.redColor)
 
+        errorBorder: _OutlineBorderBulider(context, AppColors.redColor),
+        focusedErrorBorder: _OutlineBorderBulider(context, AppColors.redColor),
+        errorStyle: TextStyle(color: AppColors.redColor),
       ),
     );
   }
@@ -69,8 +77,6 @@ OutlineInputBorder _OutlineBorderBulider(
 ) {
   return OutlineInputBorder(
     borderRadius: BorderRadius.circular(16),
-    borderSide: BorderSide(color: colorUsed),
-    gapPadding: 1.5,
-
+    borderSide: BorderSide(color: colorUsed, width: 1),
   );
 }

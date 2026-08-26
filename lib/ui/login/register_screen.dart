@@ -26,55 +26,58 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  var nameController = TextEditingController(text: 'habiba');
+  var nameController = TextEditingController();
 
-  var emailController = TextEditingController(text: 'habibafd2@gmail.com');
+  var emailController = TextEditingController();
 
-  var passwordController = TextEditingController(text: '122323');
+  var passwordController = TextEditingController();
 
-  var confirmPasswordController = TextEditingController(text: '122323');
+  var confirmPasswordController = TextEditingController();
 
   var formKey = GlobalKey<FormState>();
+  var isPasswordVisible = false;
+  var isConfirmPasswordVisible = false;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: context.scaleWidth(16),
-                    vertical: context.scaleHeight(31),
-                  ),
-                  child: Form(
-                    key: formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Center(
-                          child: ThemedImage(
-                            lightImage: AppImages.eventlyLogoLightImage,
-                            darkImage: AppImages.eventlyLogoDarkImage,
-                            width: context.scaleWidth(142),
-                            height: context.scaleHeight(30),
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        body: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: context.scaleWidth(16),
+                      vertical: context.scaleHeight(31),
+                    ),
+                    child: Form(
+                      key: formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Center(
+                            child: ThemedImage(
+                              lightImage: AppImages.eventlyLogoLightImage,
+                              darkImage: AppImages.eventlyLogoDarkImage,
+                              width: context.scaleWidth(142),
+                              height: context.scaleHeight(30),
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 47),
-                        Text(
-                          LocaleKeys.signup_title.tr(),
-                          style: Theme.of(context).textTheme.headlineLarge,
-                        ),
-                        SizedBox(height: 24),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 55,
-                          child: TextFieldWidget(
+                          SizedBox(height: 47),
+                          Text(
+                            LocaleKeys.signup_title.tr(),
+                            style: Theme
+                                .of(context)
+                                .textTheme
+                                .headlineLarge,
+                          ),
+                          SizedBox(height: 24),
+                          TextFieldWidget(
                             controller: nameController,
                             validator: (text) {
                               if (text == null || text.trim().isEmpty) {
@@ -88,12 +91,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               color: Theme.of(context).iconTheme.color,
                             ),
                           ),
-                        ),
-                        SizedBox(height: 10),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 55,
-                          child: TextFieldWidget(
+                          SizedBox(height: 10),
+                          TextFieldWidget(
                             controller: emailController,
                             validator: (text) {
                               if (text == null || text.trim().isEmpty) {
@@ -113,13 +112,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               color: Theme.of(context).iconTheme.color,
                             ),
                           ),
-                        ),
 
-                        SizedBox(height: 10),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 55,
-                          child: TextFieldWidget(
+                          SizedBox(height: 10),
+                          TextFieldWidget(
                             controller: passwordController,
                             validator: (text) {
                               if (text == null || text.trim().isEmpty) {
@@ -135,17 +130,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               Icons.lock_outline_rounded,
                               color: Theme.of(context).iconTheme.color,
                             ),
-                            sufIcon: Icon(
-                              MdiIcons.eyeOffOutline,
-                              color: Theme.of(context).iconTheme.color,
+                            obscure: !isPasswordVisible,
+                            sufIcon: IconButton(
+                              icon: isPasswordVisible
+                                  ? Icon(
+                                MdiIcons.eyeOutline,
+                                color: Theme
+                                    .of(context)
+                                    .iconTheme
+                                    .color,
+                              )
+                                  : Icon(
+                                MdiIcons.eyeOffOutline,
+                                color: Theme
+                                    .of(context)
+                                    .iconTheme
+                                    .color,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  isPasswordVisible = !isPasswordVisible;
+                                });
+                              },
                             ),
                           ),
-                        ),
-                        SizedBox(height: 10),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 55,
-                          child: TextFieldWidget(
+                          SizedBox(height: 10),
+                          TextFieldWidget(
                             controller: confirmPasswordController,
                             validator: (text) {
                               if (text == null || text.trim().isEmpty) {
@@ -163,89 +173,118 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               Icons.lock_outline_rounded,
                               color: Theme.of(context).iconTheme.color,
                             ),
-                            sufIcon: Icon(
-                              MdiIcons.eyeOffOutline,
-                              color: Theme.of(context).iconTheme.color,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 45),
-                        Center(
-                          child: ElevatedButtonWidget(
-                            onTab: onSignUp,
-                            buttonText: LocaleKeys.sign_up.tr(),
-                          ),
-                        ),
-                        SizedBox(height: 24),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-
-                          children: [
-                            Text(
-                              LocaleKeys.already_have_account.tr(),
-                              style: Theme.of(context).textTheme.labelSmall,
-                            ),
-                            TextButton(
+                            obscure: !isConfirmPasswordVisible,
+                            sufIcon: IconButton(
+                              icon: isConfirmPasswordVisible
+                                  ? Icon(MdiIcons.eyeOutline, color: Theme
+                                  .of(context)
+                                  .iconTheme
+                                  .color)
+                                  : Icon(MdiIcons.eyeOffOutline, color: Theme
+                                  .of(context)
+                                  .iconTheme
+                                  .color),
                               onPressed: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  AppRoutes.loginScreenRoute,
-                                );
+                                setState(() {
+                                  isConfirmPasswordVisible =
+                                  !isConfirmPasswordVisible;
+                                });
                               },
-                              child: Text(
-                                LocaleKeys.login.tr(),
-                                style: Theme.of(context).textTheme.labelMedium,
-                              ),
                             ),
-                          ],
-                        ),
-                        SizedBox(height: 10),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Divider(
-                                endIndent: 2,
-                                height: 2,
-                                thickness: 1,
-                                color: Theme.of(context).colorScheme.outline,
-                                indent: 2,
-                              ),
-                            ),
-                            TextButton(
-                              onPressed: () {},
-                              child: Text(
-                                LocaleKeys.or.tr(),
-                                style: Theme.of(context).textTheme.titleSmall,
-                              ),
-                            ),
-                            Expanded(
-                              child: Divider(
-                                endIndent: 2,
-                                height: 2,
-                                thickness: 1,
-                                color: Theme.of(context).colorScheme.outline,
-                                indent: 2,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 10),
-                        OutlinedButtonWidget(
-                          onTap: onTab2,
-                          text: LocaleKeys.signup_with_google.tr(),
-                          prefixIcon: SvgPicture.asset(
-                            AppImages.googleLogoImage,
-                            width: 24,
-                            height: 24,
                           ),
-                        ),
-                      ],
+                          SizedBox(height: 45),
+                          Center(
+                            child: ElevatedButtonWidget(
+                              onTab: onSignUp,
+                              buttonText: LocaleKeys.sign_up.tr(),
+                            ),
+                          ),
+                          SizedBox(height: 24),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+
+                            children: [
+                              Text(
+                                LocaleKeys.already_have_account.tr(),
+                                style: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .labelSmall,
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    AppRoutes.loginScreenRoute,
+                                  );
+                                },
+                                child: Text(
+                                  LocaleKeys.login.tr(),
+                                  style: Theme
+                                      .of(context)
+                                      .textTheme
+                                      .labelMedium,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 5),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Divider(
+                                  endIndent: 2,
+                                  height: 2,
+                                  thickness: 1,
+                                  color: Theme
+                                      .of(context)
+                                      .colorScheme
+                                      .outline,
+                                  indent: 2,
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () {},
+                                child: Text(
+                                  LocaleKeys.or.tr(),
+                                  style: Theme
+                                      .of(context)
+                                      .textTheme
+                                      .titleSmall,
+                                ),
+                              ),
+                              Expanded(
+                                child: Divider(
+                                  endIndent: 2,
+                                  height: 2,
+                                  thickness: 1,
+                                  color: Theme
+                                      .of(context)
+                                      .colorScheme
+                                      .outline,
+                                  indent: 2,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 5),
+                          OutlinedButtonWidget(
+                            onTap: onTab2,
+                            text: LocaleKeys.signup_with_google.tr(),
+                            prefixIcon: SvgPicture.asset(
+                              AppImages.googleLogoImage,
+                              width: 24,
+                              height: 24,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );

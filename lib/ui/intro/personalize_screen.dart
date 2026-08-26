@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../utils/themed_image.dart';
-import 'toggles.dart'; // فيه LanguageToggle و ThemeToggle
+import 'toggles.dart';
 
 class PersonalizeScreen extends StatelessWidget {
   const PersonalizeScreen({super.key});

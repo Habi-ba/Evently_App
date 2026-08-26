@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:evently/generated/locale_keys.g.dart';
 import 'package:flutter/material.dart';
 
 class LanguageToggle extends StatelessWidget {
@@ -11,7 +12,7 @@ class LanguageToggle extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: colorScheme.surface, // ← خلفية الـ toggle نفسه (مش المختار)
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
       ),
       padding: const EdgeInsets.all(3),
@@ -19,13 +20,13 @@ class LanguageToggle extends StatelessWidget {
         children: [
           _toggleOption(
             context,
-            label: 'english'.tr(),
+            label: LocaleKeys.english.tr(),
             selected: !isArabic,
             onTap: () => context.setLocale(const Locale('en')),
           ),
           _toggleOption(
             context,
-            label: 'arabic'.tr(),
+            label: LocaleKeys.arabic.tr(),
             selected: isArabic,
             onTap: () => context.setLocale(const Locale('ar')),
           ),

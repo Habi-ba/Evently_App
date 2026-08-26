@@ -69,8 +69,8 @@
   "passwords_do_not_match": "كلمتا المرور غير متطابقتين",
   "password_min_length": "من فضلك أدخل 6 أحرف على الأقل",
   "no_events_found_yet": "لا يوجد احداث حتى الأن !",
-  "delete_event": "حذف الحدث",
-  "confirm_delete_event": "متأكدة إنك عايزة تحذفي الحدث ده؟",
+  "delete_event": "حذف الفعالية",
+  "confirm_delete_event": "متأكدة إنك عايزة تحذفي الفعالية ده؟",
   "delete": "حذف",
   "cancel": "إلغاء",
   "loading": "جاري التحميل...",
@@ -88,5 +88,11 @@
   "user_not_found": "لا يوجد مستخدم بهذا البريد الإلكتروني.",
   "wrong_password": "كلمة المرور غير صحيحة.",
   "invalid_credential": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
-  "could_not_get_user_information": "تعذر الحصول على بيانات المستخدم."
+  "could_not_get_user_information": "تعذر الحصول على بيانات المستخدم.",
+  "event_updated_successfully": "تم تحديث الفعالية بنجاح",
+  "event_Add_successfully": "تم اضافة الفعالية بنجاح",
+  "event_deleted_successfully": "تم حذف الفعالية بنجاح"
+
+
+
 }

@@ -95,4 +95,7 @@ abstract class LocaleKeys {
   static const invalid_credential = 'invalid_credential';
   static const could_not_get_user_information =
       'could_not_get_user_information';
+  static const event_updated_successfully = 'event_updated_successfully';
+  static const event_Add_successfully = 'event_Add_successfully';
+  static const event_deleted_successfully = 'event_deleted_successfully';
 }

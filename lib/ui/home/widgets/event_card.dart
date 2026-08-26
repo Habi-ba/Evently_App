@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:evently/generated/locale_keys.g.dart';
 import 'package:evently/ui/home/event_screens/event_image_helper.dart';
 import 'package:evently/utils/ToastUtils.dart';
 import 'package:evently/utils/colors.dart';
@@ -113,7 +114,8 @@ class EventCard extends StatelessWidget {
                         then((value) {
                           return ToastUtils.
                           showToastMessage(
-                              message: 'Event Updated Successfully',
+                              message: LocaleKeys.event_updated_successfully
+                                  .tr(),
                               backgroundColor: Colors.green,
                               textColor: AppColors.whiteColor);
                         },).catchError((error) {

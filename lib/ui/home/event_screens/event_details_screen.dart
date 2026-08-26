@@ -14,11 +14,6 @@ import 'add_event/add_event_screen.dart';
 import 'event_image_helper.dart';
 
 class EventDetailsScreen extends StatelessWidget {
-  // `event` is only used as the *initial* value (so the screen isn't blank
-  // for a frame while the stream connects) and to get the eventId for the
-  // stream below. All displayed content comes from the stream, so any edit
-  // (from this screen or elsewhere) is reflected immediately — no need to
-  // pass updated data back manually via Navigator.pop() or add a Provider.
   final Event event;
 
   const EventDetailsScreen({super.key, required this.event});
@@ -81,8 +76,6 @@ class _EventDetailsBody extends StatelessWidget {
                   builder: (_) => AddEventScreen(existingEvent: event),
                 ),
               );
-              // No need to await a result: once updateEvent() writes to
-              // Firestore, the StreamBuilder above picks it up on its own.
             },
             child: Container(
               margin: const EdgeInsetsDirectional.only(end: 8, top: 10),
@@ -238,7 +231,7 @@ class _EventDetailsBody extends StatelessWidget {
           DialogUtils.hideLoading(context: context);
           Navigator.pop(context); // close details screen
           ToastUtils.showToastMessage(
-            message: 'Event Deleted Successfully',
+            message: LocaleKeys.event_deleted_successfully.tr(),
             backgroundColor: Colors.green,
             textColor: Theme.of(context).colorScheme.onPrimary,
           );

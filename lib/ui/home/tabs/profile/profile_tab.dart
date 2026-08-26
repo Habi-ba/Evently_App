@@ -3,11 +3,13 @@ import 'package:evently/generated/locale_keys.g.dart';
 import 'package:evently/providers/app-theme_provider.dart';
 import 'package:evently/utils/app_routes.dart';
 import 'package:evently/utils/size_utils.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../providers/user_provider.dart';
 import '../../../../utils/app_images.dart';
+import '../../../../utils/app_styles.dart';
 import '../../../../utils/colors.dart';
 
 class ProfileTab extends StatelessWidget {
@@ -19,6 +21,33 @@ class ProfileTab extends StatelessWidget {
     var userProvider = Provider.of<UserProvider>(context);
 
     var themeProvider = Provider.of<AppThemeProvider>(context);
+    void _showOptionsBottomSheet({
+      required BuildContext context,
+      required String title,
+      required List<String> options,
+      required String selectedOption,
+      required Function(String) onSelect,
+    }) {
+      showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children:
+            options.map((option) {
+              return ListTile(
+                title: Text(option, style: AppStyles.med16Black),
+                trailing: option == selectedOption ? Icon(Icons.check) : null,
+                onTap: () {
+                  onSelect(option);
+                  Navigator.pop(context);
+                },
+              );
+            }).toList(),
+          );
+        },
+      );
+    }
 
     return Scaffold(
       body: SafeArea(
@@ -75,11 +104,18 @@ class ProfileTab extends StatelessWidget {
                   color: theme.iconTheme.color,
                 ),
                 onTap: () {
-                  if (context.locale.languageCode == 'ar') {
-                    context.setLocale(Locale('en'));
-                  } else if (context.locale.languageCode == 'en') {
-                    context.setLocale(Locale('ar'));
-                  }
+                  _showOptionsBottomSheet(
+                    context: context,
+                    title: LocaleKeys.language.tr(),
+                    options: [LocaleKeys.arabic.tr(), LocaleKeys.english.tr()],
+                    selectedOption: context.locale.languageCode == 'ar'
+                        ? LocaleKeys.arabic.tr()
+                        : LocaleKeys.english.tr(),
+                    onSelect: (selected) {
+                      context.setLocale(Locale(selected == LocaleKeys.arabic
+                          .tr() ? 'ar' : 'en'));
+                    },
+                  );
                 },
               ),
 
@@ -94,7 +130,7 @@ class ProfileTab extends StatelessWidget {
                 ),
                 onTap: () {
                   // todo: logout
-                  // FirebaseAuth.instance.signOut();
+                  FirebaseAuth.instance.signOut();
                   Navigator.pushNamedAndRemoveUntil(
                     context,
                     AppRoutes.loginScreenRoute,
@@ -161,4 +197,5 @@ class _ProfileTile extends StatelessWidget {
       ),
     );
   }
+
 }

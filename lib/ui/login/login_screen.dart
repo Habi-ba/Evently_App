@@ -26,46 +26,46 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  var emailController = TextEditingController(text: 'habibafd2@gmail.com');
+  var emailController = TextEditingController();
 
-  var passwordController = TextEditingController(text: '122323');
+  var passwordController = TextEditingController();
 
+  var isPasswordVisible = false;
   var formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        body: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: context.scaleWidth(17),
-            vertical: context.scaleHeight(32),
-          ),
-          child: SingleChildScrollView(
-            child: Form(
-              key: formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: ThemedImage(
-                      lightImage: AppImages.eventlyLogoLightImage,
-                      darkImage: AppImages.eventlyLogoDarkImage,
-                      width: context.scaleWidth(142),
-                      height: context.scaleHeight(30),
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          body: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: context.scaleWidth(17),
+              vertical: context.scaleHeight(32),
+            ),
+            child: SingleChildScrollView(
+              child: Form(
+                key: formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: ThemedImage(
+                        lightImage: AppImages.eventlyLogoLightImage,
+                        darkImage: AppImages.eventlyLogoDarkImage,
+                        width: context.scaleWidth(142),
+                        height: context.scaleHeight(30),
+                      ),
                     ),
-                  ),
-                  SizedBox(height: context.scaleHeight(48)),
-                  Text(
-                    LocaleKeys.login_title.tr(),
-                    style: Theme.of(context).textTheme.headlineLarge,
-                  ),
-                  SizedBox(height: context.scaleHeight(24)),
-                  SizedBox(
-                    width: double.infinity,
-                    height: context.scaleHeight(48),
-                    child: TextFieldWidget(
+                    SizedBox(height: context.scaleHeight(48)),
+                    Text(
+                      LocaleKeys.login_title.tr(),
+                      style: Theme.of(context).textTheme.headlineLarge,
+                    ),
+                    SizedBox(height: context.scaleHeight(24)),
+                    TextFieldWidget(
                       hintDisplayedTxt: LocaleKeys.email_hint.tr(),
                       controller: emailController,
                       validator: (text) {
@@ -85,12 +85,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         color: Theme.of(context).iconTheme.color,
                       ),
                     ),
-                  ),
-                  SizedBox(height: context.scaleHeight(16)),
-                  SizedBox(
-                    width: double.infinity,
-                    height: context.scaleHeight(48),
-                    child: TextFieldWidget(
+                    SizedBox(height: context.scaleHeight(16)),
+                    TextFieldWidget(
                       controller: passwordController,
                       validator: (text) {
                         if (text == null || text.trim().isEmpty) {
@@ -106,93 +102,107 @@ class _LoginScreenState extends State<LoginScreen> {
                         Icons.lock_outline_rounded,
                         color: Theme.of(context).iconTheme.color,
                       ),
-                      sufIcon: Icon(
-                        MdiIcons.eyeOffOutline,
-                        color: Theme.of(context).iconTheme.color,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: context.scaleHeight(8)),
-                  Row(
-                    children: [
-                      Spacer(),
-                      Text(
-                        LocaleKeys.forget_password_question.tr(),
-                        style: Theme.of(context).textTheme.labelMedium,
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: context.scaleHeight(48)),
-                  Center(
-                    child: ElevatedButtonWidget(
-                      onTab: onLogin,
-                      buttonText: LocaleKeys.login.tr(),
-                    ),
-                  ),
-                  SizedBox(height: context.scaleHeight(48)),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-
-                    children: [
-                      Text(
-                        LocaleKeys.no_account.tr(),
-                        style: Theme.of(context).textTheme.labelSmall,
-                      ),
-                      TextButton(
+                      obscure: !isPasswordVisible,
+                      sufIcon: IconButton(
+                        icon:
+                            isPasswordVisible
+                                ? Icon(
+                                  MdiIcons.eyeOutline,
+                                  color: Theme.of(context).iconTheme.color,
+                                )
+                                : Icon(
+                                  MdiIcons.eyeOffOutline,
+                                  color: Theme.of(context).iconTheme.color,
+                                ),
                         onPressed: () {
-                          Navigator.pushNamed(
-                            context,
-                            AppRoutes.registerScreenRoute,
-                          );
+                          setState(() {
+                            isPasswordVisible = !isPasswordVisible;
+                          });
                         },
-                        child: Text(
-                          LocaleKeys.sign_up.tr(),
+                      ),
+                    ),
+                    SizedBox(height: context.scaleHeight(8)),
+                    Row(
+                      children: [
+                        Spacer(),
+                        Text(
+                          LocaleKeys.forget_password_question.tr(),
                           style: Theme.of(context).textTheme.labelMedium,
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: context.scaleHeight(32)),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Divider(
-                          endIndent: 2,
-                          height: 2,
-                          thickness: 1,
-                          color: Theme.of(context).colorScheme.outline,
-                          indent: 2,
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          LocaleKeys.or.tr(),
-                          style: Theme.of(context).textTheme.titleSmall,
-                        ),
-                      ),
-                      Expanded(
-                        child: Divider(
-                          endIndent: 2,
-                          height: 2,
-                          thickness: 1,
-                          color: Theme.of(context).colorScheme.outline,
-                          indent: 2,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: context.scaleHeight(32)),
-                  OutlinedButtonWidget(
-                    onTap: onLoginWithGoogle,
-                    text: LocaleKeys.login_with_google.tr(),
-                    prefixIcon: SvgPicture.asset(
-                      AppImages.googleLogoImage,
-                      width: 24,
-                      height: 24,
+                      ],
                     ),
-                  ),
-                ],
+                    SizedBox(height: context.scaleHeight(48)),
+                    Center(
+                      child: ElevatedButtonWidget(
+                        onTab: onLogin,
+                        buttonText: LocaleKeys.login.tr(),
+                      ),
+                    ),
+                    SizedBox(height: context.scaleHeight(48)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+
+                      children: [
+                        Text(
+                          LocaleKeys.no_account.tr(),
+                          style: Theme.of(context).textTheme.labelSmall,
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                              context,
+                              AppRoutes.registerScreenRoute,
+                            );
+                          },
+                          child: Text(
+                            LocaleKeys.sign_up.tr(),
+                            style: Theme.of(context).textTheme.labelMedium,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: context.scaleHeight(32)),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Divider(
+                            endIndent: 2,
+                            height: 2,
+                            thickness: 1,
+                            color: Theme.of(context).colorScheme.outline,
+                            indent: 2,
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {},
+                          child: Text(
+                            LocaleKeys.or.tr(),
+                            style: Theme.of(context).textTheme.titleSmall,
+                          ),
+                        ),
+                        Expanded(
+                          child: Divider(
+                            endIndent: 2,
+                            height: 2,
+                            thickness: 1,
+                            color: Theme.of(context).colorScheme.outline,
+                            indent: 2,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: context.scaleHeight(32)),
+                    OutlinedButtonWidget(
+                      onTap: onLoginWithGoogle,
+                      text: LocaleKeys.login_with_google.tr(),
+                      prefixIcon: SvgPicture.asset(
+                        AppImages.googleLogoImage,
+                        width: 24,
+                        height: 24,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -203,29 +213,25 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void onLogin() async {
     if (formKey.currentState!.validate() == true) {
-      //todo:login
       try {
-        //todo:show loading
         DialogUtils.showLoading(
-            context: context, loadingText: LocaleKeys.loading.tr());
+          context: context,
+          loadingText: LocaleKeys.loading.tr(),
+        );
         final credential = await FirebaseUtils.loginWithEmail(
           email: emailController.text,
           password: passwordController.text,
         );
-        //todo: read user from firestore
         var user = await FirebaseUtils.readFromFirstore(
           credential.user?.uid ?? '',
         );
-        //todo: save user in provider
         var userProvider = Provider.of<UserProvider>(context, listen: false);
         if (user == null) {
           return;
         }
         userProvider.updateUser(user);
 
-        //todo:hideLoading
         DialogUtils.hideLoading(context: context);
-        //todo:show message
         DialogUtils.showMessage(
           posActionName: LocaleKeys.ok.tr(),
           title: LocaleKeys.success.tr(),
@@ -262,9 +268,7 @@ class _LoginScreenState extends State<LoginScreen> {
           message: message,
         );
       } catch (e) {
-        //todo:hideLoading
         DialogUtils.hideLoading(context: context);
-        //todo:show message
         DialogUtils.showMessage(
           posActionName: LocaleKeys.ok.tr(),
           title: LocaleKeys.error.tr(),
@@ -274,7 +278,6 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     }
   }
-
 
   void onLoginWithGoogle() async {
     try {
@@ -300,10 +303,7 @@ class _LoginScreenState extends State<LoginScreen> {
         email: user.email ?? '',
       );
 
-      var userProvider = Provider.of<UserProvider>(
-        context,
-        listen: false,
-      );
+      var userProvider = Provider.of<UserProvider>(context, listen: false);
 
       userProvider.updateUser(myUser);
 
@@ -315,9 +315,7 @@ class _LoginScreenState extends State<LoginScreen> {
         context: context,
         message: LocaleKeys.login_successfully.tr(),
         posAction: () {
-          Navigator.of(context).pushNamed(
-            AppRoutes.homeScreenRoute,
-          );
+          Navigator.of(context).pushNamed(AppRoutes.homeScreenRoute);
         },
       );
     } on FirebaseAuthException catch (e) {
@@ -341,4 +339,3 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 }
-
