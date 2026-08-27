@@ -90,7 +90,7 @@
   "invalid_credential": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
   "could_not_get_user_information": "تعذر الحصول على بيانات المستخدم.",
   "event_updated_successfully": "تم تحديث الفعالية بنجاح",
-  "event_Add_successfully": "تم اضافة الفعالية بنجاح",
+  "event_Added_successfully": "تم اضافة الفعالية بنجاح",
   "event_deleted_successfully": "تم حذف الفعالية بنجاح"
 
 

@@ -260,7 +260,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
           .then((value) {
         DialogUtils.hideLoading(context: context);
         ToastUtils.showToastMessage(
-            message: LocaleKeys.event_Add_successfully.tr(),
+            message: LocaleKeys.event_Added_successfully.tr(),
             backgroundColor: Colors.greenAccent,
             textColor: Theme
                 .of(context)
@@ -329,6 +329,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
   }
 
   Future<void> chooseDate() async {
+    FocusScope.of(context).unfocus();
     var chooseDate = await showDatePicker(
       context: context,
       initialDate: selectedDate ?? DateTime.now(),
@@ -343,6 +344,7 @@ class _AddEventScreenState extends State<AddEventScreen> {
   }
 
   void chooseTime() async {
+    FocusScope.of(context).unfocus();
     var chooseTime = await showTimePicker(
       context: context,
       initialTime: selectedTime ?? TimeOfDay.now(),

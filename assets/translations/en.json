@@ -90,7 +90,7 @@
   "invalid_credential": "Incorrect email or password.",
   "could_not_get_user_information": "Could not get user information.",
   "event_updated_successfully": "Event Updated Successfully",
-  "event_added_successfully": "Event Added Successfully",
+  "event_Added_successfully": "Event Added Successfully",
   "event_deleted_successfully": "Event Deleted Successfully"
 
 }
